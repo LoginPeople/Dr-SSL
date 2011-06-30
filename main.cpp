@@ -14,8 +14,6 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-
-    cout << "starting" << endl;
     SSL_library_init();
     SSL_load_error_strings();
     ERR_load_BIO_strings();

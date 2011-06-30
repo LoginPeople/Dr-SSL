@@ -38,39 +38,27 @@ void MainWindow::startDiagnosis()
 
 void MainWindow::addLog()
 {
-    //cout << "LOG CALLED" << endl;
     ui->log->appendPlainText( QString::fromStdString(ssl->logger.str()) );
     ssl->logger.str("");
 }
 
 void MainWindow::addToolboxItem(string title, string text)
 {
-    cout << "addToolboxItem called" << endl;
     QLabel *label = new QLabel(QString::fromStdString(text),this);
-    //QLabel *label2 = new QLabel("Nokia E51",this);
-    //QLabel *label3 = new QLabel("Nokia 5800 XM",this);
 
-    cout << " added item at " << ui->toolBox->addItem(label,QString::fromStdString(title)) << endl;
-    //cout << "second item at " << ui->toolBox->addItem(label2,"Nokia E-Series") << endl;
-    //cout << " third item at " << ui->toolBox->addItem(label3,"Xpress music") << endl;
-    cout << "end of addToolboxItem" << endl;
+    ui->toolBox->addItem(label,QString::fromStdString(title));
 }
 
 void MainWindow::refreshCAs()
 {
-    cout << "refreshCAs called" << endl;
     removeWidgetsFromToolBox();
     ssl->showCAs();
-    //addToolboxItem("abc", "def");
-    //addToolboxItem("ghi", "jkl");
-    //addToolboxItem("mno", "pqr");
 }
 
 void MainWindow::removeWidgetsFromToolBox()
 {
     while(ui->toolBox->count() != 0)
     {
-        cout << "removing item n°" << 0 << endl;
         QWidget * widg = ui->toolBox->widget(0);
         ui->toolBox->removeItem(0);
         delete widg;
