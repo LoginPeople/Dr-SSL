@@ -6,7 +6,14 @@
 #include "openssl/x509_vfy.h"
 
 //#include "openssl/safestack.h"
+
+#include <windows.h>
 #include <wincrypt.h>
+
+DWORD WINAPI CertGetPublicKeyLength(
+  DWORD dwCertEncodingType,
+  PCERT_PUBLIC_KEY_INFO pPublicKey
+);
 
 #include "sslhelper.h"
 #include <stdio.h>
@@ -37,7 +44,6 @@ SSLHelper::SSLHelper()
         log( string("loadCertificates: ") + string(ERR_reason_error_string(ERR_get_error())) );
         return;
     }
-    showCAs();
 
     ssl = SSL_new(ctx);
     if(!ssl)
@@ -187,7 +193,7 @@ void SSLHelper::showCAs()
          NULL,
          L"ROOT"))
         {
-             log("The store has been opened. \n");
+             //log("The store has been opened. \n");
         }
         else
         {
@@ -198,20 +204,56 @@ void SSLHelper::showCAs()
           hStoreHandle,
           pCertContext))
     {
-        PCERT_INFO certinfo = pCertContext->pCertInfo;
+        //PCERT_INFO certinfo = pCertContext->pCertInfo;
         if(CertGetNameStringA(
            pCertContext,
            CERT_NAME_SIMPLE_DISPLAY_TYPE,
            0,
            NULL,
            pszNameString,
-           128))
+           256))
         {
             std::ostringstream oss;
-            oss << "Certificate retrieved: " << pszNameString;
-            emit(addCA(string(pszNameString), "pouet"));
-            log( oss.str() );
+            //oss << "Certificate retrieved: " << pszNameString;
+            //log( oss.str() );
         }
+        string name = pszNameString;
+        std::ostringstream oss;
+        if(CertGetNameStringA(
+           pCertContext,
+           CERT_NAME_SIMPLE_DISPLAY_TYPE,
+           0x1, //=CERT_NAME_ISSUER_FLAG,
+           NULL,
+           pszNameString,
+           256))
+        {
+            oss << "Issued by:\t\t" << pszNameString << endl;
+            //log( oss.str() );
+        }
+        //string issuer = "Issued by: ";
+        //issuer += pszNameString;
+        /*int keylength = CertGetPublicKeyLength(pCertContext->dwCertEncodingType, &pCertContext->pCertInfo->SubjectPublicKeyInfo);
+        std::ostringstream oss;
+        oss << "key length: " << keylength << endl;*/
+
+        //string result = pCertContext->pCertInfo->SignatureAlgorithm.pszObjId;
+        oss << "Signature algorithm:\t" << CertOIDToAlgId( pCertContext->pCertInfo->SignatureAlgorithm.pszObjId ) << endl;
+
+        SYSTEMTIME stUTC, stLocal;
+        FileTimeToSystemTime(&pCertContext->pCertInfo->NotBefore, &stUTC);
+        SystemTimeToTzSpecificLocalTime(NULL, &stUTC, &stLocal);
+
+        oss << "Not before:\t\t" << stLocal.wDay << "/" << stLocal.wMonth << "/" << stLocal.wYear;
+        oss << "  " << stLocal.wHour << ":" << stLocal.wMinute << endl;
+
+        //SYSTEMTIME stUTC, stLocal;
+        FileTimeToSystemTime(&pCertContext->pCertInfo->NotAfter, &stUTC);
+        SystemTimeToTzSpecificLocalTime(NULL, &stUTC, &stLocal);
+
+        oss << "Not after:\t\t" << stLocal.wDay << "/" << stLocal.wMonth << "/" << stLocal.wYear;
+        oss << "  " << stLocal.wHour << ":" << stLocal.wMinute << endl;
+
+        emit(addCA(name, oss.str()));
     }
 
     if (!CertCloseStore(
