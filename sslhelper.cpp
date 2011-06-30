@@ -35,8 +35,6 @@ typedef struct {
 
 SSLHelper::SSLHelper()
 {
-    log( "starting SSL helper" );
-
     ctx = loadCertificates();
     SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, verify_callback);
     if(!ctx)
@@ -53,7 +51,6 @@ SSLHelper::SSLHelper()
         return;
     }
 
-    log( "creating BIO" );
     bio = BIO_new_ssl_connect(ctx);
     if(bio == NULL)
     {
@@ -64,14 +61,13 @@ SSLHelper::SSLHelper()
 
 SSLHelper::~SSLHelper()
 {
-    log( "closing ssl helper" );
     SSL_CTX_free(ctx);
     BIO_free_all(bio);
 }
 
 void SSLHelper::testConnection(string host, string port)
 {
-    log( string("ssl to host=") + host + " and port=" + port );
+    log( string("Connecting to ") + host + " on port " + port );
 
 
 
@@ -90,8 +86,7 @@ void SSLHelper::testConnection(string host, string port)
     mydata.helper = this;
     SSL_set_ex_data(ssl, mydata_index, &mydata);
 
-    log( "trying to connect" );
-
+    log( "trying to connect..." );
 
     if(BIO_do_connect(bio) <= 0)
     {
@@ -110,13 +105,9 @@ void SSLHelper::testConnection(string host, string port)
         log( oss.str() );
     }
     else
-       log( "verified connection" );
+       log( "connection verified" );
 
     log( "\n==================================\n" );
-
-    //log( string("verify depth: ") + SSL_CTX_get_verify_depth(ctx) );
-    //log( string("verify  mode: ") + SSL_CTX_get_verify_mode(ctx) );
-
 }
 
 SSL_CTX * SSLHelper::loadCertificates()
@@ -165,9 +156,6 @@ SSL_CTX * SSLHelper::loadCertificates()
 
         pCertContext = CertEnumCertificatesInStore(hCertStore, pCertContext);
     }
-
-    log( "root certificates loaded" );
-
     return ctx;
 }
 
