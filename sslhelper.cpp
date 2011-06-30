@@ -51,12 +51,7 @@ SSLHelper::SSLHelper()
         return;
     }
 
-    bio = BIO_new_ssl_connect(ctx);
-    if(bio == NULL)
-    {
-        log( "failure to create BIO" );
-        return;
-    }
+
 }
 
 SSLHelper::~SSLHelper()
@@ -69,8 +64,12 @@ void SSLHelper::testConnection(string host, string port)
 {
     log( string("Connecting to ") + host + " on port " + port );
 
-
-
+    bio = BIO_new_ssl_connect(ctx);
+    if(bio == NULL)
+    {
+        log( "failure to create BIO" );
+        return;
+    }
     BIO_set_conn_hostname(bio, (char * )host.c_str());
     BIO_set_conn_port(bio, (char *)port.c_str());
 
@@ -106,6 +105,8 @@ void SSLHelper::testConnection(string host, string port)
     }
     else
        log( "connection verified" );
+
+    BIO_free(bio);
 
     log( "\n==================================\n" );
 }
@@ -156,6 +157,7 @@ SSL_CTX * SSLHelper::loadCertificates()
 
         pCertContext = CertEnumCertificatesInStore(hCertStore, pCertContext);
     }
+
     return ctx;
 }
 
