@@ -264,6 +264,79 @@ void SSLHelper::showCAs()
     }
 }
 
+void SSLHelper::dumpCerts()
+{
+    HCERTSTORE         hStoreHandle = NULL;
+    PCCERT_CONTEXT     pCertContext = NULL;
+    char                pszNameString[256];
+
+    if (hStoreHandle = CertOpenSystemStore(
+         NULL,
+         L"ROOT"))
+        {
+             //log("The store has been opened. \n");
+        }
+        else
+        {
+             log("The store was not opened.\n");
+             return;
+        }
+
+    while(pCertContext = CertEnumCertificatesInStore(
+          hStoreHandle,
+          pCertContext))
+    {
+        if(CertGetNameStringA(
+           pCertContext,
+           CERT_NAME_SIMPLE_DISPLAY_TYPE,
+           0,
+           NULL,
+           pszNameString,
+           256))
+        {
+            std::ostringstream oss;
+        }
+        string name = pszNameString;
+
+        exportPFX(pCertContext, name+".der");
+    }
+
+    if (!CertCloseStore(
+             hStoreHandle,
+             0))
+    {
+        log("Failed CertCloseStore\n");
+    }
+
+    wchar_t path[MAX_PATH];
+    GetCurrentDirectory(MAX_PATH,path);
+
+
+    ShellExecute(NULL, L"explore", path, NULL, NULL, SW_SHOWNORMAL);
+}
+
+void SSLHelper::exportPFX( PCCERT_CONTEXT pCertContext,
+     string name )
+ {
+     int rc = NO_ERROR;
+
+     HANDLE hFile = CreateFileA(name.c_str(),
+         GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+     if (hFile != INVALID_HANDLE_VALUE) {
+         DWORD writtenBytes = 0;
+         if (WriteFile(hFile, pCertContext->pbCertEncoded, pCertContext->cbCertEncoded, &writtenBytes, NULL)) {
+             cout << "3 Written to a pfx file\n" << endl;
+             //OK
+         } else {
+             rc = GetLastError();
+         }
+         CloseHandle(hFile);
+     } else {
+         cout <<"4 Failed to open a file " << name << endl;
+         rc = GetLastError();
+     }
+ }
+
 
 static int verify_callback(int preverify_ok, X509_STORE_CTX *ctx)
 {

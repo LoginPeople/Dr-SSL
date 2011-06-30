@@ -5,6 +5,7 @@
 #include "openssl/ssl.h"
 #include <string>
 #include <sstream>
+#include <wincrypt.h>
 
 #include <QObject>
 
@@ -21,12 +22,16 @@ class SSLHelper : public QObject
         void log(string text);
         void log(ostream text);
         void showCAs();
+        void exportPFX( PCCERT_CONTEXT  pContext, string name);
         ~SSLHelper();
         stringstream logger;
 
     signals:
          void logging();
          void addCA(string title, string text);
+
+    public slots:
+         void dumpCerts();
 
     private:
         BIO * bio;

@@ -130,7 +130,7 @@
                <x>0</x>
                <y>0</y>
                <width>938</width>
-               <height>379</height>
+               <height>377</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -145,7 +145,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>920</width>
-                   <height>307</height>
+                   <height>305</height>
                   </rect>
                  </property>
                  <attribute name="label">
@@ -198,11 +198,22 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="refreshButton">
-            <property name="text">
-             <string>Refresh</string>
-            </property>
-           </widget>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QPushButton" name="refreshButton">
+              <property name="text">
+               <string>Refresh</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="dumpcertsButton">
+              <property name="text">
+               <string>Copy certificates</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
