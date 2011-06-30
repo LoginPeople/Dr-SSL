@@ -1,8 +1,11 @@
-#include "openssl/bio.h"
-#include "openssl/ssl.h"
-#include "openssl/err.h"
-#include "openssl/x509_vfy.h"
 #include "openssl/x509.h"
+#include "openssl/ssl.h"
+#include "openssl/bio.h"
+#include "openssl/err.h"
+
+#include "openssl/x509_vfy.h"
+
+//#include "openssl/safestack.h"
 #include <wincrypt.h>
 
 #include "sslhelper.h"
@@ -34,6 +37,7 @@ SSLHelper::SSLHelper()
         log( string("loadCertificates: ") + string(ERR_reason_error_string(ERR_get_error())) );
         return;
     }
+    showCAs();
 
     ssl = SSL_new(ctx);
     if(!ssl)
@@ -172,6 +176,52 @@ void SSLHelper::log(ostream text)
     logger << text << endl;
     emit(logging());
 }
+
+void SSLHelper::showCAs()
+{
+    HCERTSTORE         hStoreHandle = NULL;
+    PCCERT_CONTEXT     pCertContext = NULL;
+    char                pszNameString[256];
+
+    if (hStoreHandle = CertOpenSystemStore(
+         NULL,
+         L"ROOT"))
+        {
+             log("The store has been opened. \n");
+        }
+        else
+        {
+             log("The store was not opened.\n");
+        }
+
+    while(pCertContext = CertEnumCertificatesInStore(
+          hStoreHandle,
+          pCertContext))
+    {
+        PCERT_INFO certinfo = pCertContext->pCertInfo;
+        if(CertGetNameStringA(
+           pCertContext,
+           CERT_NAME_SIMPLE_DISPLAY_TYPE,
+           0,
+           NULL,
+           pszNameString,
+           128))
+        {
+            std::ostringstream oss;
+            oss << "Certificate retrieved: " << pszNameString;
+            emit(addCA(string(pszNameString), "pouet"));
+            log( oss.str() );
+        }
+    }
+
+    if (!CertCloseStore(
+             hStoreHandle,
+             0))
+    {
+        log("Failed CertCloseStore\n");
+    }
+}
+
 
 static int verify_callback(int preverify_ok, X509_STORE_CTX *ctx)
 {

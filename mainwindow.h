@@ -19,10 +19,13 @@ public:
 public slots:
     void startDiagnosis();
     void addLog();
+    void addToolboxItem(string title, string text);
+    void refreshCAs();
 
 private:
     Ui::MainWindow *ui;
     SSLHelper      *ssl;
+    void removeWidgetsFromToolBox();
 };
 
 #endif // MAINWINDOW_H

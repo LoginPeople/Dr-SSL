@@ -20,11 +20,13 @@ class SSLHelper : public QObject
         void testConnection(string hostname, string port = "443");
         void log(string text);
         void log(ostream text);
+        void showCAs();
         ~SSLHelper();
         stringstream logger;
 
     signals:
          void logging();
+         void addCA(string title, string text);
 
     private:
         BIO * bio;
