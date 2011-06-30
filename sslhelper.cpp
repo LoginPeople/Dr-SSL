@@ -9,11 +9,12 @@
 
 #include <windows.h>
 #include <wincrypt.h>
+#include <shellapi.h>
 
-DWORD WINAPI CertGetPublicKeyLength(
+/*DWORD WINAPI CertGetPublicKeyLength(
   DWORD dwCertEncodingType,
   PCERT_PUBLIC_KEY_INFO pPublicKey
-);
+);*/
 
 #include "sslhelper.h"
 #include <stdio.h>
