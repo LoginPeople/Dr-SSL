@@ -42,7 +42,7 @@
        <bool>false</bool>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab">
        <attribute name="title">
@@ -145,51 +145,12 @@
                    <x>0</x>
                    <y>0</y>
                    <width>920</width>
-                   <height>305</height>
+                   <height>332</height>
                   </rect>
                  </property>
                  <attribute name="label">
                   <string>Page 1</string>
                  </attribute>
-                 <widget class="QLabel" name="label_5">
-                  <property name="geometry">
-                   <rect>
-                    <x>220</x>
-                    <y>160</y>
-                    <width>46</width>
-                    <height>13</height>
-                   </rect>
-                  </property>
-                  <property name="text">
-                   <string>aaa</string>
-                  </property>
-                 </widget>
-                </widget>
-                <widget class="QWidget" name="page_2">
-                 <property name="geometry">
-                  <rect>
-                   <x>0</x>
-                   <y>0</y>
-                   <width>911</width>
-                   <height>357</height>
-                  </rect>
-                 </property>
-                 <attribute name="label">
-                  <string>Page 2</string>
-                 </attribute>
-                 <widget class="QLabel" name="label_4">
-                  <property name="geometry">
-                   <rect>
-                    <x>90</x>
-                    <y>30</y>
-                    <width>46</width>
-                    <height>13</height>
-                   </rect>
-                  </property>
-                  <property name="text">
-                   <string>abc</string>
-                  </property>
-                 </widget>
                 </widget>
                </widget>
               </item>
