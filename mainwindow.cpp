@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->refreshButton, SIGNAL( clicked() ), this, SLOT(refreshCAs()));
     connect(ssl, SIGNAL(addCA(string,string)), this, SLOT(addToolboxItem(string,string)));
     connect(ui->dumpcertsButton, SIGNAL( clicked()), ssl, SLOT(dumpCerts()));
+    connect(ui->clearlogButton, SIGNAL( clicked()), this, SLOT(clearLog()));
     refreshCAs();
 }
 
@@ -71,4 +72,10 @@ void MainWindow::removeWidgetsFromToolBox()
         delete widg;
     }
     cout << "after removing widget" << endl;
+}
+
+void MainWindow::clearLog()
+{
+    cout << "clearing the log" << endl;
+    ui->log->clear();
 }

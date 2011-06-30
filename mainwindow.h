@@ -21,6 +21,7 @@ public slots:
     void addLog();
     void addToolboxItem(string title, string text);
     void refreshCAs();
+    void clearLog();
 
 private:
     Ui::MainWindow *ui;
