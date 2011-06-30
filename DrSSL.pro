@@ -19,7 +19,7 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-CONFIG += console
+#CONFIG += console
 
 INCLUDEPATH += C:\OpenSSL\include
 LIBS += -LC:\OpenSSL\lib -lssleay32 -llibeay32 -lcrypt32 -lole32
