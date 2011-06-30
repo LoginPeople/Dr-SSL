@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ssl, SIGNAL(logging()), this, SLOT(addLog()));
     connect(ui->refreshButton, SIGNAL( clicked() ), this, SLOT(refreshCAs()));
     connect(ssl, SIGNAL(addCA(string,string)), this, SLOT(addToolboxItem(string,string)));
+    refreshCAs();
 }
 
 MainWindow::~MainWindow()
