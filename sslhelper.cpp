@@ -56,8 +56,8 @@ SSLHelper::SSLHelper()
 
 SSLHelper::~SSLHelper()
 {
+    SSL_free(ssl);
     SSL_CTX_free(ctx);
-    BIO_free_all(bio);
 }
 
 void SSLHelper::testConnection(string host, string port)
