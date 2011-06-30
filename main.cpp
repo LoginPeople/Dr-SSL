@@ -1,6 +1,7 @@
 #include <QtGui/QApplication>
 
 #include <iostream>
+#include <objbase.h>
 #include "openssl/bio.h"
 #include "openssl/ssl.h"
 #include "openssl/err.h"
@@ -19,6 +20,7 @@ int main(int argc, char *argv[])
     SSL_load_error_strings();
     ERR_load_BIO_strings();
     OpenSSL_add_all_algorithms();
+    CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
 
     QApplication a(argc, argv);
     MainWindow w;
@@ -26,7 +28,8 @@ int main(int argc, char *argv[])
 
     int result = a.exec();
 
-    //int result = 0;
+
+    CoUninitialize();
     EVP_cleanup();
     return result;
 }
