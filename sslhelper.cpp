@@ -248,7 +248,7 @@ void SSLHelper::showCAs()
              hStoreHandle,
              0))
     {
-        log("Failed CertCloseStore\n");
+        log("Failed CertCloseStore");
     }
 }
 
@@ -293,7 +293,7 @@ void SSLHelper::dumpCerts()
              hStoreHandle,
              0))
     {
-        log("Failed CertCloseStore\n");
+        log("Failed CertCloseStore");
     }
 
     wchar_t path[MAX_PATH];
@@ -313,14 +313,14 @@ void SSLHelper::exportPFX( PCCERT_CONTEXT pCertContext,
      if (hFile != INVALID_HANDLE_VALUE) {
          DWORD writtenBytes = 0;
          if (WriteFile(hFile, pCertContext->pbCertEncoded, pCertContext->cbCertEncoded, &writtenBytes, NULL)) {
-             cout << "3 Written to a pfx file\n" << endl;
+             cout << "Written to a pfx file" << endl;
              //OK
          } else {
              rc = GetLastError();
          }
          CloseHandle(hFile);
      } else {
-         cout <<"4 Failed to open a file " << name << endl;
+         cout <<"Failed to open the file " << name << endl;
          rc = GetLastError();
      }
  }
