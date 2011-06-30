@@ -36,7 +36,9 @@ typedef struct {
 
 SSLHelper::SSLHelper()
 {
-    ctx = loadCertificates();
+    ctx = NULL;
+    ssl = NULL;
+    /*ctx = loadCertificates();
     SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, verify_callback);
     if(!ctx)
     {
@@ -50,15 +52,48 @@ SSLHelper::SSLHelper()
         log( string("SSL_new: ") + string(ERR_reason_error_string(ERR_get_error())) );
 
         return;
-    }
-
-
+    }*/
+    //loadSSL();
 }
 
 SSLHelper::~SSLHelper()
 {
-    SSL_free(ssl);
-    SSL_CTX_free(ctx);
+    //SSL_free(ssl);
+    //SSL_CTX_free(ctx);
+}
+
+void SSLHelper::loadSSL()
+{
+    cout << "before loadCertificates" << endl;
+    ctx = loadCertificates();
+    cout << "after loadCertificates" << endl;
+    SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, verify_callback);
+    cout << "after set_verify" << endl;
+    if(!ctx)
+    {
+        log( string("loadCertificates: ") + string(ERR_reason_error_string(ERR_get_error())) );
+        return;
+    }
+
+    ssl = SSL_new(ctx);
+    if(!ssl)
+    {
+        log( string("SSL_new: ") + string(ERR_reason_error_string(ERR_get_error())) );
+
+        return;
+    }
+}
+
+void SSLHelper::reloadSSL()
+{
+    cout << "before SSL_free" << endl;
+    //if(ssl)
+    //    SSL_free(ssl);
+    cout << "before SSL_CTX_free" << endl;
+    //if(ctx)
+    //    SSL_CTX_free(ctx);
+
+    loadSSL();
 }
 
 void SSLHelper::testConnection(string host, string port)

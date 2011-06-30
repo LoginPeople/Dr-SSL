@@ -51,16 +51,24 @@ void MainWindow::addToolboxItem(string title, string text)
 
 void MainWindow::refreshCAs()
 {
+    cout << "in refreshCAs" << endl;
     removeWidgetsFromToolBox();
+    cout << "before reloadSSL" << endl;
+    ssl->reloadSSL();
+    cout << "after reloadSSL" << endl;
     ssl->showCAs();
+    cout << "after showCAs" << endl;
 }
 
 void MainWindow::removeWidgetsFromToolBox()
 {
+    cout << "before removing widget" << endl;
     while(ui->toolBox->count() != 0)
     {
+        cout << "removing widget" << endl;
         QWidget * widg = ui->toolBox->widget(0);
         ui->toolBox->removeItem(0);
         delete widg;
     }
+    cout << "after removing widget" << endl;
 }
