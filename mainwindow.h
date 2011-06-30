@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "sslhelper.h"
 
 namespace Ui {
     class MainWindow;
@@ -15,8 +16,13 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void startDiagnosis();
+    void addLog();
+
 private:
     Ui::MainWindow *ui;
+    SSLHelper      *ssl;
 };
 
 #endif // MAINWINDOW_H

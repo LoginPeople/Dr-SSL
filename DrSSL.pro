@@ -11,8 +11,18 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    sslhelper.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    sslhelper.h
 
 FORMS    += mainwindow.ui
+
+CONFIG += console
+
+INCLUDEPATH += C:\OpenSSL\include
+LIBS += -LC:\OpenSSL\lib -lssleay32 -llibeay32 -lcrypt32
+
+RESOURCES += \
+    pics.qrc
