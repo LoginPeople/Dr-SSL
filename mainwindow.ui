@@ -64,7 +64,7 @@
           <item>
            <widget class="QLineEdit" name="host">
             <property name="text">
-             <string>eleves.ec-lille.fr</string>
+             <string/>
             </property>
            </widget>
           </item>
