@@ -10,6 +10,7 @@
 #include <windows.h>
 #include <wincrypt.h>
 #include <shellapi.h>
+#include <shlwapi.h>
 
 /*DWORD WINAPI CertGetPublicKeyLength(
   DWORD dwCertEncodingType,
@@ -439,4 +440,125 @@ static int verify_callback(int preverify_ok, X509_STORE_CTX *ctx)
      return 1;
    else
      return preverify_ok;
+}
+
+void ShowLastError();
+
+void SSLHelper::addCert(string url)
+{
+    cout << "sslhelper addcert with " << url << endl;
+    DWORD dwSize, dwRead;
+    LPBYTE pbEncodedCert;
+    HANDLE hHeap;
+    bool bResult;
+    char path[MAX_PATH];
+    DWORD nbChars = MAX_PATH;
+
+    hHeap = GetProcessHeap();
+
+    /*HRESULT */PathCreateFromUrlA( url.c_str(), path, &nbChars, NULL);
+    cout << "opening path: " << path << endl;
+    // Open Certificate file
+    HANDLE hFile = CreateFileA(path,
+               GENERIC_READ,
+               0,
+               NULL,
+               OPEN_EXISTING,
+               FILE_ATTRIBUTE_NORMAL,
+               NULL);
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        cout << "Unable to open certificate file" << endl;
+        ShowLastError();
+        return;
+    }
+    // Get file length
+    dwSize = GetFileSize(hFile, NULL);
+    if (dwSize == 0xFFFFFFFF)
+    {
+        cout << "Unable to get size of certificate file" << endl;
+        return;
+    }
+
+    // Allocate memory for encoded key
+    pbEncodedCert = (LPBYTE)HeapAlloc(hHeap, 0, dwSize);
+    if (!pbEncodedCert)
+    {
+        cout << "Unable to allocate memory for encoded key" << endl;
+        return;
+    }
+
+    // Read encoded key data
+    bResult = ReadFile(hFile,
+                (LPVOID)pbEncodedCert,
+                dwSize,
+                &dwRead,
+                NULL);
+    if (!bResult)
+    {
+        cout << "Unable to read encoded key" << endl;
+        return;
+    }
+
+    // Close file handle
+    CloseHandle(hFile);
+    hFile = INVALID_HANDLE_VALUE;
+
+    PCCERT_CONTEXT cert = CertCreateCertificateContext(
+      X509_ASN_ENCODING,
+      pbEncodedCert,
+      dwRead
+    );
+
+    // Open Certificate Store
+    HANDLE hStore = CertOpenSystemStore(
+                NULL,  L"ROOT");
+    if (!hStore)
+    {
+      cout << "CertOpenStore failed with " << GetLastError() << endl;
+      return;
+    }
+
+    bResult = CertAddCertificateContextToStore(
+      hStore,
+      cert,
+      CERT_STORE_ADD_REPLACE_EXISTING,
+      NULL);
+    if (!bResult)
+    {
+        cout << "CertAddEncodedCertificateContextToStore failed with " << GetLastError() << endl;
+        ShowLastError();
+    }
+
+    if (!CertCloseStore(
+             hStore,
+             0))
+    {
+        log("Failed CertCloseStore");
+    }
+
+    if (pbEncodedCert) HeapFree(hHeap, 0, pbEncodedCert);
+}
+
+void ShowLastError()
+{
+    // Retrieve the system error message for the last-error code
+
+    char *  lpMsgBuf;
+    LPVOID lpDisplayBuf;
+    DWORD dw = GetLastError();
+
+    FormatMessageA(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER |
+        FORMAT_MESSAGE_FROM_SYSTEM |
+        FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        dw,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (char *) &lpMsgBuf,
+        0, NULL );
+
+    cout << "error: " << lpMsgBuf << endl;
+
+    LocalFree(lpMsgBuf);
 }

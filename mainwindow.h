@@ -22,6 +22,7 @@ public slots:
     void addToolboxItem(string title, string text);
     void refreshCAs();
     void clearLog();
+    void addCert(string);
 
 private:
     Ui::MainWindow *ui;

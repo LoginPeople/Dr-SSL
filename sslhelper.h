@@ -25,6 +25,7 @@ class SSLHelper : public QObject
         void reloadSSL();
         void loadSSL();
         void exportPFX( PCCERT_CONTEXT  pContext, string name);
+        void addCert(string);
         ~SSLHelper();
         stringstream logger;
 

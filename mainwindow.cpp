@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     ssl(new SSLHelper)
 {
+    setAcceptDrops(true);
     ui->setupUi(this);
     connect(ui->pushButton, SIGNAL( clicked() ), this, SLOT(startDiagnosis()));
     connect(ssl, SIGNAL(logging()), this, SLOT(addLog()));
@@ -16,6 +17,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->dumpcertsButton, SIGNAL( clicked()), ssl, SLOT(dumpCerts()));
     connect(ui->clearlogButton, SIGNAL( clicked()), this, SLOT(clearLog()));
     refreshCAs();
+    ui->toolBox->setAcceptDrops(true);
+    connect(ui->toolBox, SIGNAL(dropCert(string)), this, SLOT(addCert(string)));
+
 }
 
 MainWindow::~MainWindow()
@@ -78,4 +82,10 @@ void MainWindow::clearLog()
 {
     cout << "clearing the log" << endl;
     ui->log->clear();
+}
+
+void MainWindow::addCert(string url)
+{
+    ssl->addCert(url);
+    refreshCAs();
 }

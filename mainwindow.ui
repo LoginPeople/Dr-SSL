@@ -16,6 +16,9 @@
     <height>16777212</height>
    </size>
   </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
@@ -28,6 +31,9 @@
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -139,13 +145,13 @@
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>98</width>
-               <height>114</height>
+               <width>938</width>
+               <height>377</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
               <item>
-               <widget class="QToolBox" name="toolBox">
+               <widget class="DropQToolBox" name="toolBox">
                 <property name="currentIndex">
                  <number>0</number>
                 </property>
@@ -154,8 +160,8 @@
                   <rect>
                    <x>0</x>
                    <y>0</y>
-                   <width>98</width>
-                   <height>28</height>
+                   <width>920</width>
+                   <height>332</height>
                   </rect>
                  </property>
                  <attribute name="label">
@@ -289,6 +295,14 @@
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>DropQToolBox</class>
+   <extends>QToolBox</extends>
+   <header location="global">dropqtoolbox.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="pics.qrc"/>
  </resources>

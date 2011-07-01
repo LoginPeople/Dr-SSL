@@ -12,17 +12,19 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    sslhelper.cpp
+    sslhelper.cpp \
+    dropqtoolbox.cpp
 
 HEADERS  += mainwindow.h \
-    sslhelper.h
+    sslhelper.h \
+    dropqtoolbox.h
 
 FORMS    += mainwindow.ui
 
 #CONFIG += console
 
 INCLUDEPATH += C:\OpenSSL\include
-LIBS += -LC:\OpenSSL\lib -lssleay32 -llibeay32 -lcrypt32 -lole32 -lshell32
+LIBS += -LC:\OpenSSL\lib -lssleay32 -llibeay32 -lshlwapi -lcrypt32 -lole32 -lshell32
 
 RESOURCES += \
     pics.qrc
