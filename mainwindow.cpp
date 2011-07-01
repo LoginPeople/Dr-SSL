@@ -1,7 +1,9 @@
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "sslhelper.h"
 #include <iostream>
+#include <shellapi.h>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -20,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->toolBox->setAcceptDrops(true);
     connect(ui->toolBox, SIGNAL(dropCert(string)), this, SLOT(addCert(string)));
     connect(ssl, SIGNAL(verifiedStatus(bool)), this, SLOT(verified(bool)));
-
+    connect(ui->sendLog, SIGNAL(clicked()), this, SLOT(emailLog()));
 }
 
 MainWindow::~MainWindow()
@@ -103,4 +105,14 @@ void MainWindow::verified(bool verified)
         ui->connectionStatus->setStyleSheet("* { background-color: red; color: white; font-weight: bold }");
         ui->connectionStatus->setText("Unverified connection");
     }
+}
+
+void MainWindow::emailLog()
+{
+    string mail = "mailto:support@loginpeople.com?Subject= DrSSL report&Body=";
+    QString msg = ui->log->toPlainText();
+    msg.replace(QChar('\n'), tr("%0A"));
+    mail += msg.toStdString();
+
+    ShellExecuteA(0,"open",mail.c_str(),"","",1);
 }

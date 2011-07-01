@@ -24,6 +24,7 @@ public slots:
     void clearLog();
     void addCert(string);
     void verified(bool);
+    void emailLog();
 
 private:
     Ui::MainWindow *ui;
