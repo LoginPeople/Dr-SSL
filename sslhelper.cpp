@@ -39,26 +39,12 @@ SSLHelper::SSLHelper()
 {
     ctx = NULL;
     ssl = NULL;
-    /*ctx = loadCertificates();
-    SSL_CTX_set_verify(ctx, SSL_VERIFY_PEER, verify_callback);
-    if(!ctx)
-    {
-        log( string("loadCertificates: ") + string(ERR_reason_error_string(ERR_get_error())) );
-        return;
-    }
 
-    ssl = SSL_new(ctx);
-    if(!ssl)
-    {
-        log( string("SSL_new: ") + string(ERR_reason_error_string(ERR_get_error())) );
-
-        return;
-    }*/
-    //loadSSL();
 }
 
 SSLHelper::~SSLHelper()
 {
+    //FIXME: memory leak, but it's better than a crash
     //SSL_free(ssl);
     //SSL_CTX_free(ctx);
 }
@@ -407,8 +393,6 @@ static int verify_callback(int preverify_ok, X509_STORE_CTX *ctx)
        X509_STORE_CTX_set_error(ctx, err);
    }
    if (!preverify_ok) {
-       //printf("verify error:num=%d:%s:depth=%d:%s\n", err,
-       //         X509_verify_cert_error_string(err), depth, buf);
        std::ostringstream oss;
        oss << "verify error:num=" << err << ":" << X509_verify_cert_error_string(err) << endl;
        oss << "depth=" << depth << ":" << endl;
@@ -437,7 +421,6 @@ static int verify_callback(int preverify_ok, X509_STORE_CTX *ctx)
      std::ostringstream oss;
      oss << "issuer = " << buf;
      mydata->helper->log( oss.str() );
-     //mydata->helper->log( string("issuer = ") + string(buf) );
    }
 
    if (mydata->always_continue)
