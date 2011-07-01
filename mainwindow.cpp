@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     refreshCAs();
     ui->toolBox->setAcceptDrops(true);
     connect(ui->toolBox, SIGNAL(dropCert(string)), this, SLOT(addCert(string)));
+    connect(ssl, SIGNAL(verifiedStatus(bool)), this, SLOT(verified(bool)));
 
 }
 
@@ -88,4 +89,18 @@ void MainWindow::addCert(string url)
 {
     ssl->addCert(url);
     refreshCAs();
+}
+
+void MainWindow::verified(bool verified)
+{
+    if(verified)
+    {
+        ui->connectionStatus->setStyleSheet("* { background-color: green; color: white; font-weight: bold }");
+        ui->connectionStatus->setText("Verified connection");
+    }
+    else
+    {
+        ui->connectionStatus->setStyleSheet("* { background-color: red; color: white; font-weight: bold }");
+        ui->connectionStatus->setText("Unverified connection");
+    }
 }

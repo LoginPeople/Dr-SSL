@@ -32,6 +32,7 @@ class SSLHelper : public QObject
     signals:
          void logging();
          void addCA(string title, string text);
+         void verifiedStatus(bool);
 
     public slots:
          void dumpCerts();

@@ -139,9 +139,13 @@ void SSLHelper::testConnection(string host, string port)
         std::ostringstream oss;
         oss << "unverified connection: " << SSL_get_verify_result(ssl) ;
         log( oss.str() );
+        emit(verifiedStatus(false));
     }
     else
+    {
        log( "connection verified" );
+       emit(verifiedStatus(true));
+    }
 
     BIO_free(bio);
 

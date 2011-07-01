@@ -23,6 +23,7 @@ public slots:
     void refreshCAs();
     void clearLog();
     void addCert(string);
+    void verified(bool);
 
 private:
     Ui::MainWindow *ui;
