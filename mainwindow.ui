@@ -20,7 +20,11 @@
    <bool>false</bool>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Dr SSL</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="pics.qrc">
+    <normaloff>:/pics/petit_logo.png</normaloff>:/pics/petit_logo.png</iconset>
   </property>
   <property name="inputMethodHints">
    <set>Qt::ImhDigitsOnly</set>
