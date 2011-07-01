@@ -41,6 +41,7 @@ class SSLHelper : public QObject
         BIO * bio;
         SSL_CTX * ctx;
         SSL * ssl;
+        HCERTSTORE hCertStore;
 
 };
 

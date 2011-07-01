@@ -39,11 +39,23 @@ SSLHelper::SSLHelper()
 {
     ctx = NULL;
     ssl = NULL;
+    hCertStore = CertOpenSystemStore(0, L"ROOT");
 
+    if(!hCertStore)
+    {
+        log( "couldn't open the certificate store" );
+        return;
+    }
 }
 
 SSLHelper::~SSLHelper()
 {
+    if (!CertCloseStore(
+             hCertStore,
+             0))
+    {
+        log("Failed CertCloseStore");
+    }
     //FIXME: memory leak, but it's better than a crash
     //SSL_free(ssl);
     //SSL_CTX_free(ctx);
@@ -141,16 +153,7 @@ void SSLHelper::testConnection(string host, string port)
 SSL_CTX * SSLHelper::loadCertificates()
 {
     SSL_CTX * ctx = SSL_CTX_new(SSLv23_client_method());
-
-    //int err = 0;
     X509_STORE *store = SSL_CTX_get_cert_store(ctx);
-    HCERTSTORE hCertStore = CertOpenSystemStore(0, L"ROOT");
-
-    if(!hCertStore)
-    {
-        log( "couldn't open the certificate store" );
-        return NULL;
-    }
 
     PCCERT_CONTEXT pCertContext = CertEnumCertificatesInStore(hCertStore, NULL);
     while ( pCertContext )
@@ -202,24 +205,11 @@ void SSLHelper::log(ostream text)
 
 void SSLHelper::showCAs()
 {
-    HCERTSTORE         hStoreHandle = NULL;
     PCCERT_CONTEXT     pCertContext = NULL;
     char                pszNameString[256];
 
-    if (hStoreHandle = CertOpenSystemStore(
-         NULL,
-         L"ROOT"))
-        {
-             //log("The store has been opened. \n");
-        }
-        else
-        {
-             log("The store was not opened.\n");
-        }
-
     while(pCertContext = CertEnumCertificatesInStore(
-          hStoreHandle,
-          pCertContext))
+          hCertStore, pCertContext))
     {
         //PCERT_INFO certinfo = pCertContext->pCertInfo;
         if(CertGetNameStringA(
@@ -272,35 +262,15 @@ void SSLHelper::showCAs()
 
         emit(addCA(name, oss.str()));
     }
-
-    if (!CertCloseStore(
-             hStoreHandle,
-             0))
-    {
-        log("Failed CertCloseStore");
-    }
 }
 
 void SSLHelper::dumpCerts()
 {
-    HCERTSTORE         hStoreHandle = NULL;
     PCCERT_CONTEXT     pCertContext = NULL;
     char                pszNameString[256];
 
-    if (hStoreHandle = CertOpenSystemStore(
-         NULL,
-         L"ROOT"))
-        {
-             //log("The store has been opened. \n");
-        }
-        else
-        {
-             log("The store was not opened.\n");
-             return;
-        }
-
     while(pCertContext = CertEnumCertificatesInStore(
-          hStoreHandle,
+          hCertStore,
           pCertContext))
     {
         if(CertGetNameStringA(
@@ -316,13 +286,6 @@ void SSLHelper::dumpCerts()
         string name = pszNameString;
 
         exportPFX(pCertContext, name+".der");
-    }
-
-    if (!CertCloseStore(
-             hStoreHandle,
-             0))
-    {
-        log("Failed CertCloseStore");
     }
 
     wchar_t path[MAX_PATH];
@@ -497,17 +460,8 @@ void SSLHelper::addCert(string url)
       dwRead
     );
 
-    // Open Certificate Store
-    HANDLE hStore = CertOpenSystemStore(
-                NULL,  L"ROOT");
-    if (!hStore)
-    {
-      cout << "CertOpenStore failed with " << GetLastError() << endl;
-      return;
-    }
-
     bResult = CertAddCertificateContextToStore(
-      hStore,
+      hCertStore,
       cert,
       CERT_STORE_ADD_REPLACE_EXISTING,
       NULL);
@@ -517,22 +471,13 @@ void SSLHelper::addCert(string url)
         ShowLastError();
     }
 
-    if (!CertCloseStore(
-             hStore,
-             0))
-    {
-        log("Failed CertCloseStore");
-    }
-
     if (pbEncodedCert) HeapFree(hHeap, 0, pbEncodedCert);
 }
 
 void ShowLastError()
 {
     // Retrieve the system error message for the last-error code
-
     char *  lpMsgBuf;
-    LPVOID lpDisplayBuf;
     DWORD dw = GetLastError();
 
     FormatMessageA(
