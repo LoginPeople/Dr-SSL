@@ -101,7 +101,7 @@ void SSLHelper::testConnection(string host, string port)
 {
     log( string("Connecting to ") + host + " on port " + port );
 
-    bio = BIO_new_ssl_connect(ctx);
+    BIO * bio = BIO_new_ssl_connect(ctx);
     if(bio == NULL)
     {
         log( "failure to create BIO" );
@@ -130,6 +130,7 @@ void SSLHelper::testConnection(string host, string port)
         /* Handle failed connection */
         string reason = string( "failure to connect: " ) + string(ERR_reason_error_string(ERR_get_error()));
         log( reason );
+        BIO_free(bio);
         throw ConnectionException( reason );
         //return;
     }

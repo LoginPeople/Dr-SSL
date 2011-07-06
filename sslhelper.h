@@ -38,7 +38,6 @@ class SSLHelper : public QObject
          void dumpCerts();
 
     private:
-        BIO * bio;
         SSL_CTX * ctx;
         SSL * ssl;
         HCERTSTORE hCertStore;
