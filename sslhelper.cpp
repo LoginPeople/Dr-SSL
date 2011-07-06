@@ -215,8 +215,8 @@ void SSLHelper::showCAs()
     PCCERT_CONTEXT     pCertContext = NULL;
     char                pszNameString[256];
 
-    while(pCertContext = CertEnumCertificatesInStore(
-          hCertStore, pCertContext))
+    while( (pCertContext = CertEnumCertificatesInStore(
+          hCertStore, pCertContext)) )
     {
         //PCERT_INFO certinfo = pCertContext->pCertInfo;
         if(CertGetNameStringA(
@@ -276,9 +276,8 @@ void SSLHelper::dumpCerts()
     PCCERT_CONTEXT     pCertContext = NULL;
     char                pszNameString[256];
 
-    while(pCertContext = CertEnumCertificatesInStore(
-          hCertStore,
-          pCertContext))
+    while( (pCertContext = CertEnumCertificatesInStore(
+          hCertStore, pCertContext)) )
     {
         if(CertGetNameStringA(
            pCertContext,
