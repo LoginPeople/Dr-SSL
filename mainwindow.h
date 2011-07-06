@@ -25,6 +25,7 @@ public slots:
     void addCert(string);
     void verified(bool);
     void emailLog();
+    void dumpCerts();
 
 private:
     Ui::MainWindow *ui;

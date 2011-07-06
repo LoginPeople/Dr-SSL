@@ -23,6 +23,8 @@
 
 #include <sstream>
 
+#include "sslexception.h"
+
 using namespace std;
 
 static int verify_callback(int preverify_ok, X509_STORE_CTX *ctx);
@@ -43,8 +45,7 @@ SSLHelper::SSLHelper()
 
     if(!hCertStore)
     {
-        log( "couldn't open the certificate store" );
-        return;
+        throw SSLException( "couldn't open the certificate store" );
     }
 }
 
@@ -71,24 +72,25 @@ void SSLHelper::loadSSL()
     if(!ctx)
     {
         log( string("loadCertificates: ") + string(ERR_reason_error_string(ERR_get_error())) );
-        return;
+        throw CertificateException("invalid SSL context");
+        //return;
     }
 
     ssl = SSL_new(ctx);
     if(!ssl)
     {
         log( string("SSL_new: ") + string(ERR_reason_error_string(ERR_get_error())) );
-
-        return;
+        throw CertificateException("invalid SSL object");
+        //return;
     }
 }
 
 void SSLHelper::reloadSSL()
 {
-    cout << "before SSL_free" << endl;
+    //cout << "before SSL_free" << endl;
     //if(ssl)
     //    SSL_free(ssl);
-    cout << "before SSL_CTX_free" << endl;
+    //cout << "before SSL_CTX_free" << endl;
     //if(ctx)
     //    SSL_CTX_free(ctx);
 
@@ -103,7 +105,8 @@ void SSLHelper::testConnection(string host, string port)
     if(bio == NULL)
     {
         log( "failure to create BIO" );
-        return;
+        throw ConnectionException("could not create BIO");
+        //return;
     }
     BIO_set_conn_hostname(bio, (char * )host.c_str());
     BIO_set_conn_port(bio, (char *)port.c_str());
@@ -125,8 +128,10 @@ void SSLHelper::testConnection(string host, string port)
     if(BIO_do_connect(bio) <= 0)
     {
         /* Handle failed connection */
-        log( string("failure to connect: " ) + string(ERR_reason_error_string(ERR_get_error())) );
-        return;
+        string reason = string( "failure to connect: " ) + string(ERR_reason_error_string(ERR_get_error()));
+        log( reason );
+        throw ConnectionException( reason );
+        //return;
     }
     log( "connected" );
 
@@ -181,7 +186,8 @@ SSL_CTX * SSLHelper::loadCertificates()
                     err2 = ERR_get_error();
                 }
                 log( abcd.c_str() );
-                return NULL;
+                throw CertificateException(abcd.c_str());
+                //return NULL;
             }
         }
 
@@ -315,6 +321,8 @@ void SSLHelper::exportPFX( PCCERT_CONTEXT pCertContext,
          cout <<"Failed to open the file " << name << endl;
          rc = GetLastError();
      }
+     if(rc != NO_ERROR)
+         throw CertificateException( name + " could not be exported" );
  }
 
 
@@ -420,22 +428,24 @@ void SSLHelper::addCert(string url)
     {
         cout << "Unable to open certificate file" << endl;
         ShowLastError();
-        return;
+        throw CertificateException( "Unable to open certificate file" );
     }
     // Get file length
     dwSize = GetFileSize(hFile, NULL);
     if (dwSize == 0xFFFFFFFF)
     {
         cout << "Unable to get size of certificate file" << endl;
-        return;
+        CloseHandle(hFile);
+        throw CertificateException( "Unable to get size of certificate file" );
     }
 
-    // Allocate memory for encoded key
+    // Allocate memory for encoded cert
     pbEncodedCert = (LPBYTE)HeapAlloc(hHeap, 0, dwSize);
     if (!pbEncodedCert)
     {
-        cout << "Unable to allocate memory for encoded key" << endl;
-        return;
+        cout << "Unable to allocate memory for encoded cert" << endl;
+        CloseHandle(hFile);
+        throw CertificateException( "Unable to allocate memory for encoded cert" );
     }
 
     // Read encoded key data
@@ -446,8 +456,10 @@ void SSLHelper::addCert(string url)
                 NULL);
     if (!bResult)
     {
-        cout << "Unable to read encoded key" << endl;
-        return;
+        cout << "Unable to read encoded cert" << endl;
+        CloseHandle(hFile);
+        HeapFree(hHeap, 0, pbEncodedCert);
+        throw CertificateException( "Unable to read encoded cert" );
     }
 
     // Close file handle
@@ -468,7 +480,9 @@ void SSLHelper::addCert(string url)
     if (!bResult)
     {
         cout << "CertAddEncodedCertificateContextToStore failed with " << GetLastError() << endl;
+        HeapFree(hHeap, 0, pbEncodedCert);
         ShowLastError();
+        throw CertificateException( "CertAddEncodedCertificateContextToStore failed" );
     }
 
     if (pbEncodedCert) HeapFree(hHeap, 0, pbEncodedCert);

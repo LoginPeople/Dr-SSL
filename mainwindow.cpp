@@ -4,6 +4,7 @@
 #include "sslhelper.h"
 #include <iostream>
 #include <shellapi.h>
+#include "sslexception.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -16,7 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ssl, SIGNAL(logging()), this, SLOT(addLog()));
     connect(ui->refreshButton, SIGNAL( clicked() ), this, SLOT(refreshCAs()));
     connect(ssl, SIGNAL(addCA(string,string)), this, SLOT(addToolboxItem(string,string)));
-    connect(ui->dumpcertsButton, SIGNAL( clicked()), ssl, SLOT(dumpCerts()));
+    connect(ui->dumpcertsButton, SIGNAL( clicked()), this, SLOT(dumpCerts()));
     connect(ui->clearlogButton, SIGNAL( clicked()), this, SLOT(clearLog()));
     refreshCAs();
     ui->toolBox->setAcceptDrops(true);
@@ -41,7 +42,12 @@ void MainWindow::startDiagnosis()
 
     cout << "connecting to: " << ui->host->text().toStdString() << ":" << ui->port->text().toStdString() << endl;
 
-    ssl->testConnection(ui->host->text().toStdString(), ui->port->text().toStdString());
+    try {
+        ssl->testConnection(ui->host->text().toStdString(), ui->port->text().toStdString());
+    }
+    catch(ConnectionException& e) {
+        ui->errorbox->setText(e.what());
+    }
 }
 
 void MainWindow::addLog()
@@ -61,11 +67,16 @@ void MainWindow::refreshCAs()
 {
     cout << "in refreshCAs" << endl;
     removeWidgetsFromToolBox();
-    cout << "before reloadSSL" << endl;
-    ssl->reloadSSL();
-    cout << "after reloadSSL" << endl;
-    ssl->showCAs();
-    cout << "after showCAs" << endl;
+    try {
+        cout << "before reloadSSL" << endl;
+        ssl->reloadSSL();
+        cout << "after reloadSSL" << endl;
+        ssl->showCAs();
+        cout << "after showCAs" << endl;
+    }
+    catch(CertificateException& e) {
+        ui->errorbox->setText(e.what());
+    }
 }
 
 void MainWindow::removeWidgetsFromToolBox()
@@ -89,8 +100,13 @@ void MainWindow::clearLog()
 
 void MainWindow::addCert(string url)
 {
-    ssl->addCert(url);
-    refreshCAs();
+    try {
+        ssl->addCert(url);
+        refreshCAs();
+    }
+    catch(CertificateException& e) {
+        ui->errorbox->setText(e.what());
+    }
 }
 
 void MainWindow::verified(bool verified)
@@ -115,4 +131,15 @@ void MainWindow::emailLog()
     mail += msg.toStdString();
 
     ShellExecuteA(0,"open",mail.c_str(),"","",1);
+}
+
+void MainWindow::dumpCerts()
+{
+    try{
+        ssl->dumpCerts();
+    }
+    catch(CertificateException& e)
+    {
+        ui->errorbox->setText(e.what());
+    }
 }

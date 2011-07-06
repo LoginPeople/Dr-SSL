@@ -17,7 +17,8 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     sslhelper.h \
-    dropqtoolbox.h
+    dropqtoolbox.h \
+    sslexception.h
 
 FORMS    += mainwindow.ui
 
