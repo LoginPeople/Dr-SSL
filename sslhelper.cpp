@@ -236,7 +236,7 @@ void SSLHelper::showCAs()
         }
 
         CRYPT_INTEGER_BLOB serial = pCertContext->pCertInfo->SerialNumber;
-        oss  << "Serial number: ";
+        oss  << "Serial number:\t\t";
         cout << "Serial number: ";
         for(int i= pCertContext->pCertInfo->SerialNumber.cbData - 1; i > 0; i--)
         {
@@ -289,7 +289,7 @@ void SSLHelper::showCAs()
         {
             key_id.resize(size_needed);
             cout << "key ID: ";
-            oss  << "key ID: ";
+            oss  << "key ID:\t\t";
             if(CertGetCertificateContextProperty(pCertContext, CERT_KEY_IDENTIFIER_PROP_ID, &key_id[0], &size_needed))
             {
                 for ( key_it= key_id.begin() ; key_it < key_id.end()-1; key_it++ )
