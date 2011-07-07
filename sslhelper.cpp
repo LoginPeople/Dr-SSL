@@ -216,9 +216,11 @@ void SSLHelper::showCAs()
     PCCERT_CONTEXT     pCertContext = NULL;
     char                pszNameString[256];
 
+
     while( (pCertContext = CertEnumCertificatesInStore(
           hCertStore, pCertContext)) )
     {
+        std::ostringstream oss;
         //PCERT_INFO certinfo = pCertContext->pCertInfo;
         if(CertGetNameStringA(
            pCertContext,
@@ -228,12 +230,23 @@ void SSLHelper::showCAs()
            pszNameString,
            256))
         {
-            std::ostringstream oss;
+            //std::ostringstream oss;
             //oss << "Certificate retrieved: " << pszNameString;
             //log( oss.str() );
         }
+
+        CRYPT_INTEGER_BLOB serial = pCertContext->pCertInfo->SerialNumber;
+        oss  << "Serial number: ";
+        cout << "Serial number: ";
+        for(int i= pCertContext->pCertInfo->SerialNumber.cbData - 1; i > 0; i--)
+        {
+            oss  << setw(2) << setfill('0') << hex << (int)pCertContext->pCertInfo->SerialNumber.pbData[i] << ":";
+            cout << setw(2) << setfill('0') << hex << (int)pCertContext->pCertInfo->SerialNumber.pbData[i] << ":";
+        }
+        oss  << setw(2) << setfill('0') << hex << (int)pCertContext->pCertInfo->SerialNumber.pbData[0] << endl;
+        cout << setw(2) << setfill('0') << hex << (int)pCertContext->pCertInfo->SerialNumber.pbData[0] << endl;
+
         string name = pszNameString;
-        std::ostringstream oss;
         if(CertGetNameStringA(
            pCertContext,
            CERT_NAME_SIMPLE_DISPLAY_TYPE,
