@@ -246,6 +246,9 @@ void SSLHelper::showCAs()
         oss  << setw(2) << setfill('0') << hex << (int)pCertContext->pCertInfo->SerialNumber.pbData[0] << endl;
         cout << setw(2) << setfill('0') << hex << (int)pCertContext->pCertInfo->SerialNumber.pbData[0] << endl;
 
+        //come back to decimal notation for dates
+        oss << dec;
+
         string name = pszNameString;
         if(CertGetNameStringA(
            pCertContext,
