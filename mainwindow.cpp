@@ -59,6 +59,7 @@ void MainWindow::addLog()
 void MainWindow::addToolboxItem(string title, string text)
 {
     QLabel *label = new QLabel(QString::fromStdString(text),this);
+    label->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
     ui->toolBox->addItem(label,QString::fromStdString(title));
 }
