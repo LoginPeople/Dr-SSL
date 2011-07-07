@@ -20,7 +20,8 @@
 #include "sslhelper.h"
 #include <stdio.h>
 #include <iostream>
-
+#include <iomanip>
+#include <vector>
 #include <sstream>
 
 #include "sslexception.h"
@@ -267,7 +268,37 @@ void SSLHelper::showCAs()
         oss << "Not after:\t\t" << stLocal.wDay << "/" << stLocal.wMonth << "/" << stLocal.wYear;
         oss << "  " << stLocal.wHour << ":" << stLocal.wMinute << endl;
 
+        //Getting key identifier
+        std::vector<BYTE> key_id(1);
+        vector<BYTE>::iterator key_it;
+        DWORD size_needed = 0;
+        if(CertGetCertificateContextProperty(pCertContext, CERT_KEY_IDENTIFIER_PROP_ID, NULL, &size_needed))
+        {
+            key_id.resize(size_needed);
+            cout << "key ID: ";
+            oss  << "key ID: ";
+            if(CertGetCertificateContextProperty(pCertContext, CERT_KEY_IDENTIFIER_PROP_ID, &key_id[0], &size_needed))
+            {
+                for ( key_it= key_id.begin() ; key_it < key_id.end()-1; key_it++ )
+                {
+                    cout << setw(2) << setfill('0') << hex << (int)*key_it << ":";
+                    oss  << setw(2) << setfill('0') << hex << (int)*key_it << ":";
+                }
+                cout << setw(2) << setfill('0') << hex << (int)*key_it;
+                oss  << setw(2) << setfill('0') << hex << (int)*key_it;
+
+                //cout << "hex number: " << hex << 16 << endl;
+            }
+            cout << endl;
+            oss  << endl;
+        }
+        else
+        {
+            cout << "could not get key identifier" << endl;
+        }
+
         emit(addCA(name, oss.str()));
+
     }
 }
 
