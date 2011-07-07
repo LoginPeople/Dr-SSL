@@ -259,14 +259,14 @@ void SSLHelper::showCAs()
         SystemTimeToTzSpecificLocalTime(NULL, &stUTC, &stLocal);
 
         oss << "Not before:\t\t" << stLocal.wDay << "/" << stLocal.wMonth << "/" << stLocal.wYear;
-        oss << "  " << stLocal.wHour << ":" << stLocal.wMinute << endl;
+        oss << "  " <<  setw(2) << setfill('0') << stLocal.wHour << ":" <<  setw(2) << setfill('0') << stLocal.wMinute << endl;
 
         //SYSTEMTIME stUTC, stLocal;
         FileTimeToSystemTime(&pCertContext->pCertInfo->NotAfter, &stUTC);
         SystemTimeToTzSpecificLocalTime(NULL, &stUTC, &stLocal);
 
         oss << "Not after:\t\t" << stLocal.wDay << "/" << stLocal.wMonth << "/" << stLocal.wYear;
-        oss << "  " << stLocal.wHour << ":" << stLocal.wMinute << endl;
+        oss << "  " <<  setw(2) << setfill('0') << stLocal.wHour << ":" << setw(2) << setfill('0') << stLocal.wMinute << endl;
 
         //Getting key identifier
         std::vector<BYTE> key_id(1);
