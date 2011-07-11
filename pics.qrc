@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/pics">
         <file>logo_loginPeople.png</file>
-        <file>petit_logo.png</file>
+        <file>dr_sso_32.ico</file>
     </qresource>
 </RCC>

@@ -24,7 +24,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="pics.qrc">
-    <normaloff>:/pics/petit_logo.png</normaloff>:/pics/petit_logo.png</iconset>
+    <normaloff>:/pics/dr_sso_32.ico</normaloff>:/pics/dr_sso_32.ico</iconset>
   </property>
   <property name="inputMethodHints">
    <set>Qt::ImhDigitsOnly</set>
@@ -265,7 +265,7 @@
            <string notr="true">font: 14pt &quot;Lucida Sans Unicode&quot;;</string>
           </property>
           <property name="text">
-           <string>Dr SSL, a diagnostic tool for your SSL deployments</string>
+           <string>A diagnostic tool for your SSL deployments</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignHCenter|Qt::AlignTop</set>
@@ -275,7 +275,11 @@
         <item>
          <widget class="QLabel" name="label_3">
           <property name="text">
-           <string>Provided by &lt;a href=&quot;http://loginpeople.com&quot;&gt;LoginPeople&lt;/a&gt;</string>
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Provided by &lt;a href=&quot;http://loginpeople.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;LoginPeople&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="textFormat">
            <enum>Qt::RichText</enum>

@@ -29,3 +29,7 @@ LIBS += -LC:\OpenSSL\lib -lssleay32 -llibeay32 -lshlwapi -lcrypt32 -lole32 -lshe
 
 RESOURCES += \
     pics.qrc
+
+OTHER_FILES += \
+    logo_loginPeople.png \
+    dr_sso_32.ico
