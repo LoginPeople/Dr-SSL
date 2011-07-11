@@ -185,7 +185,7 @@
                <x>0</x>
                <y>0</y>
                <width>938</width>
-               <height>377</height>
+               <height>389</height>
               </rect>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -206,7 +206,7 @@
                    <x>0</x>
                    <y>0</y>
                    <width>920</width>
-                   <height>332</height>
+                   <height>344</height>
                   </rect>
                  </property>
                  <attribute name="label">
@@ -335,14 +335,6 @@ p, li { white-space: pre-wrap; }
      <height>21</height>
     </rect>
    </property>
-  </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
