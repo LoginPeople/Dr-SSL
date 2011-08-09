@@ -6,6 +6,8 @@
 #include <shellapi.h>
 #include "sslexception.h"
 
+#define SUPPORT_EMAIL "support@loginpeople.com"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
@@ -126,7 +128,7 @@ void MainWindow::verified(bool verified)
 
 void MainWindow::emailLog()
 {
-    string mail = "mailto:support@loginpeople.com?Subject= DrSSL report&Body=";
+    string mail = "mailto:" SUPPORT_EMAIL "?Subject= DrSSL report&Body=";
     QString msg = ui->log->toPlainText();
     msg.replace(QChar('\n'), tr("%0A"));
     mail += msg.toStdString();
