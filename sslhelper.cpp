@@ -150,6 +150,37 @@ void SSLHelper::testConnection(string host, string port)
     {
        log( "connection verified" );
        emit(verifiedStatus(true));
+
+       stringstream getslash;
+       getslash << "GET / HTTP/1.1\nHost: " << host;
+       if(port == "443")
+           getslash << endl;
+       else
+           getslash << ":" << port << endl;
+       getslash << "User-Agent: DrSSL\n";
+       getslash << "Accept: text/html;\n";
+       getslash << "Accept-Language: q=0.8,en-us;\n";
+       getslash << "Accept-Encoding: deflate\n";
+       getslash << "Accept-Charset: ISO-8859-1,utf-8;\n";
+       getslash << "Connection: keep-alive\n\n";
+
+       log("Sending request:");
+       log(getslash.str());
+
+       int err = SSL_write(ssl, getslash.str().c_str(), getslash.str().length());
+       if(err <=0)
+       {
+           log("Request failed");
+           BIO_free(bio);
+           return;
+       }
+
+       char response[1024] = { 0 };
+
+       err = SSL_read(ssl, response, sizeof(response)-1);
+
+       log("Result:");
+       log(response);
     }
 
     BIO_free(bio);
